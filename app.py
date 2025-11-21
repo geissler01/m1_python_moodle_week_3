@@ -7,18 +7,24 @@ inventary = [
     {"nombre": "Monitor 24 pulgadas", "precio": 159.99, "cantidad": 20},
     {"nombre": "Disco SSD 1TB", "precio": 119.49, "cantidad": 15}
 ]
+
 while True:
     print(msm_main())
     sel = filter_sel_main()
     if sel == 1:
         add_product(inventary)
-
+        
     elif sel == 2:
         show_inventary(inventary)
     elif sel == 3:
-        pass
+        find_product = input('NOMBRE PRODUCTO: ')
+        search_product(inventary, find_product )
     elif sel == 4:
-        pass
+        product = input('NOMBRE PRODUCTO: ')
+        price = input('PRECIO: ')
+        quantity = input('CANTIDAD: ')
+        inventary = apdate_inventary(inventary, product, price, quantity)
+
     elif sel == 5:
         pass
     elif sel == 6:

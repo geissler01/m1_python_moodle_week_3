@@ -28,7 +28,7 @@ def filter_sel_main():
         print('Error: Ingrese una opcion listada')
 
 
-# Funcion para pedir productos
+# Funcion para pedir productos y añadir productos
 def add_product(inventary: list):
 
     name = input('NOMBRE: ')
@@ -69,21 +69,66 @@ def add_product(inventary: list):
 # Funcion mostrar inventario
 def show_inventary(inventary):
     
-    print('-'*40)
-    print(f'{'INVENTARIO':<15}')
-    print('-'*40)
-    print(F'{'NOMBRE':<11} | {'PRECIO':<11} | {'CANTIDAD':<11}')
-
-    for invent in (inventary):
-        print(f'{invent['nombre']:<11} | {invent['precio']:<11} | {invent['cantidad']:<11}')
-    print('-'*40)
+    # tabla dinamica, medidas
+    len_name = max(len(l['nombre']) for l in inventary)
+    len_price = max(len(str(l['precio'])) for l in inventary)
+    len_quantity = max(len(str(l['cantidad'])) for l in inventary)
+    # Encabezado
+    print('-'*(len_name + len_price + len_quantity + 10))
+    print(f'{'INVENTARIO':<{len_name + 0.5*(len_price)}} {'':<{len_quantity + 0.5*(len_price)}}')
+    print('-'*(len_name + len_price + len_quantity + 10))
+    print(F'{'NOMBRE':<{len_name}} | {'PRECIO':<{len_price}} | {'CANTIDAD':<{len_quantity}}')
+    print('-'*(len_name + len_price + len_quantity + 10))
+    for inv in (inventary):
+        print(F'{inv['nombre']:<{len_name}} | {inv['precio']:<{len_price}} | {inv['cantidad']:<{len_quantity}}')
+    print('-'*(len_name + len_price + len_quantity + 10))
 
 
 
 # Funcion Buscar producto
-def searc_product():
-    pass
-    print('-'*40)
-    print(f'{'INVENTARIO':<15}')
-    print('-'*40)
+def search_product(inventary, name):
+    # tabla dinamica, medidas
+    len_name = max(len(l['nombre']) for l in inventary)
+    len_price = max(len(str(l['precio'])) for l in inventary)
+    len_quantity = max(len(str(l['cantidad'])) for l in inventary)
+    # Encabezado
+    print('-'*(len_name + len_price + len_quantity + 10))
+    print(F'{'NOMBRE':<{len_name}} | {'PRECIO':<{len_price}} | {'CANTIDAD':<{len_quantity}}')
+    print('-'*(len_name + len_price + len_quantity + 10))
+    none_found = False # bandera para averigar si encotramos algo
+    for i in range(len(inventary)): # recorro la tabla
+        if name == inventary[i]['nombre']: # comparo la busqueda
+            print(F'{inventary[i]['nombre']:<{len_name}} | {inventary[i]['precio']:<{len_price}} | {inventary[i]['cantidad']:<{len_quantity}}')
+            none_found = True
+    if not none_found: # en caso de no encontrar nada
+        print('El PRODUCTO no se encuentra en en INVENTARIO')
+    print('-'*(len_name + len_price + len_quantity + 10)) # linea inferior
+
+
+# Funcion actualizar inventario
+def apdate_inventary(inventary, name, new_price = None, new_quantity = None):
+    
+    find_product = False # bandera para buscar
+    find_price = False
+    find_quantity = False
+    for i in range(len(inventary)):
+        if name == inventary[i]['nombre']:
+            find_product = True
+            if new_price != None:
+                inventary[i]['precio'].append(new_price)
+                find_price = True
+            if new_quantity != None:
+                inventary[i]['cantidad'].append(new_quantity)
+                find_product = True
+    # Revisando banderas
+    if not find_product:
+        print('El PRODUCTO ingresado no está en el INVENTARIO')
+    elif find_price:
+        print('No se actualizó el PRECIO')
+    elif find_quantity:
+        print('No se actualizó el CANTIDAD')
+    return inventary # regreso inventario actualizado
+    
+
+
 

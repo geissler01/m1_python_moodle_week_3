@@ -107,28 +107,49 @@ def search_product(inventary, name):
 
 # Funcion actualizar inventario
 def apdate_inventary(inventary, name, new_price = None, new_quantity = None):
+    if new_price is not None:
+        try:
+            new_price = float(new_price)
+            if new_price < 0:
+                print('Error: Ingrese un valor valido para precio')
+                return
+        except ValueError:
+            print('Error: Ingrese un valor valido para precio')
+            return
+    else: 
+        following = input('El precio es None, desea continuar con la Actualizacion? => s/n : ').strip()
+        if following.lower() != 's':
+            return
+        
+    if new_quantity != None:
+        try:
+            new_quantity = int(new_quantity)
+            if new_quantity < 0:
+                print('Error: Ingrese un valor valido para precio')
+                return
+        except ValueError:
+            print('Error: Ingrese un valor valido para precio')
+            return
+    else: 
+        following = input('La cantidad es None, desea continuar con la Actualizacion? => s/n : ').strip()
+        if following.lower() != 's':
+            return
     
+    new_dict_inventary = {
+        'nombre':name,
+        'precio':new_price,
+        'cantidad':new_quantity
+    }
     find_product = False # bandera para buscar
-    find_price = False
-    find_quantity = False
-    for i in range(len(inventary)):
+    for i in range(len(inventary)): # Buscando el producto
         if name == inventary[i]['nombre']:
+            inventary[i] = new_dict_inventary
             find_product = True
-            if new_price != None:
-                inventary[i]['precio'].append(new_price)
-                find_price = True
-            if new_quantity != None:
-                inventary[i]['cantidad'].append(new_quantity)
-                find_product = True
-    # Revisando banderas
     if not find_product:
         print('El PRODUCTO ingresado no está en el INVENTARIO')
-    elif find_price:
-        print('No se actualizó el PRECIO')
-    elif find_quantity:
-        print('No se actualizó el CANTIDAD')
-    return inventary # regreso inventario actualizado
-    
+        return None
+    else:
+        return inventary
 
 
 

@@ -16,16 +16,33 @@ while True:
         
     elif sel == 2:
         show_inventary(inventary)
+
     elif sel == 3:
         find_product = input('NOMBRE PRODUCTO: ')
         search_product(inventary, find_product )
-    elif sel == 4:
-        product = input('NOMBRE PRODUCTO: ')
-        price = input('PRECIO: ')
-        quantity = input('CANTIDAD: ')
-        inventary = apdate_inventary(inventary, product, price, quantity)
+
+    elif sel == 4: # actualizar
+        while True:
+            product = input('NOMBRE PRODUCTO: ')
+            if product != '':
+                break
+            else:
+                print('Error: Ingrese el nombre del producto a ACTUALIZAR')
+        while True:
+            price = input('PRECIO: ')
+            quantity = input('CANTIDAD: ')
+            if price == '' or quantity == '':
+                print('Error: ingrese valores de precio o cantidad válidos')
+                continue
+            inventary = apdate_inventary(inventary, product, price, quantity)
+            if inventary != None:
+                break
+            inventary = inventary
+            break
+
 
     elif sel == 5:
+
         pass
     elif sel == 6:
         pass

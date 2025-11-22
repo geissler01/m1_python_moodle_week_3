@@ -74,14 +74,14 @@ def show_inventary(inventary):
     len_price = max(len(str(l['precio'])) for l in inventary)
     len_quantity = max(len(str(l['cantidad'])) for l in inventary)
     # Encabezado
-    print('-'*(len_name + len_price + len_quantity + 10))
-    print(f'{'INVENTARIO':<{len_name + 0.5*(len_price)}} {'':<{len_quantity + 0.5*(len_price)}}')
-    print('-'*(len_name + len_price + len_quantity + 10))
+    print('-'*(len_name + len_price + len_quantity + 13))
+    print(f'{'INVENTARIO':>15}')
+    print('-'*(len_name + len_price + len_quantity + 13))
     print(F'{'NOMBRE':<{len_name}} | {'PRECIO':<{len_price}} | {'CANTIDAD':<{len_quantity}}')
-    print('-'*(len_name + len_price + len_quantity + 10))
+    print('-'*(len_name + len_price + len_quantity + 13))
     for inv in (inventary):
         print(F'{inv['nombre']:<{len_name}} | {inv['precio']:<{len_price}} | {inv['cantidad']:<{len_quantity}}')
-    print('-'*(len_name + len_price + len_quantity + 10))
+    print('-'*(len_name + len_price + len_quantity + 13))
 
 
 
@@ -112,11 +112,11 @@ def apdate_inventary(inventary, name, new_price = None, new_quantity = None):
             new_price = float(new_price)
             if new_price < 0:
                 print('Error: Ingrese un valor valido para precio')
-                return
+                return      # De esta forma solo regresa un None
         except ValueError:
             print('Error: Ingrese un valor valido para precio')
             return
-    else: 
+    else: # Esto solo se ejecuta cuando dejo la funcion sin valores, pero por el momento los estoy pidiendo todos por input
         following = input('El precio es None, desea continuar con la Actualizacion? => s/n : ').strip()
         if following.lower() != 's':
             return
@@ -134,22 +134,79 @@ def apdate_inventary(inventary, name, new_price = None, new_quantity = None):
         following = input('La cantidad es None, desea continuar con la Actualizacion? => s/n : ').strip()
         if following.lower() != 's':
             return
-    
-    new_dict_inventary = {
-        'nombre':name,
-        'precio':new_price,
-        'cantidad':new_quantity
-    }
-    find_product = False # bandera para buscar
+
+    find_product = False # bandera para indicar si el producto fue encontrado
     for i in range(len(inventary)): # Buscando el producto
         if name == inventary[i]['nombre']:
-            inventary[i] = new_dict_inventary
+            inventary[i]['precio'] = new_price
+            inventary[i]['cantidad'] = new_quantity
             find_product = True
     if not find_product:
         print('El PRODUCTO ingresado no está en el INVENTARIO')
         return None
-    else:
-        return inventary
+    
+    return inventary
 
 
+# Funcion para eliminar producto
+def delate_product(inventary, name):
+    find_p = False
+    for invent in inventary:
+        if name == invent['nombre']:
+            inventary.remove(invent)
+            find_p = True
+            print(f'Producto eliminado')
+    if not find_p:
+        print('PRODUCTO no encontrado en el INVENTARIO')
+    return inventary
+
+
+# Funcion para calcular estadisticas
+def calculate_statistics(inventary):
+    account = inventary
+    for ac in account[:]: # uso la copia para recorrer, pero los cambios iran a la lista original
+        if 'total' not in ac:
+            ac['total'] = 0
+        ac['total'] = round(ac['precio']*ac['cantidad'], 2)
+    #suma de productos
+    quantity_products = len(account)  # simplemente suma los items del inventario, suponiendo que todos los registros tienen un producto
+    total_price_inventary = round(sum(invent['total'] for invent in account)) # sumo totales de precios por producto
+    higher_price = max(invent['precio'] for invent in account) # precio mas alto
+    for ac in account:
+        if higher_price == ac['precio']:
+            name_product = ac['nombre']
+            break
+
+    higher_quantity_product = max(invent['cantidad'] for invent in account) # producto con precio mas alto
+    for ac in account:
+        if higher_quantity_product == ac['cantidad']:
+            name_product_q = ac['nombre']
+            break
+
+
+    
+    # tabla dinamica, medidas
+    len_name = max(len(l['nombre']) for l in account)
+    len_price = max(len(str(l['precio'])) for l in account)
+    len_quantity = max(len(str(l['cantidad'])) for l in account)
+    len_total = max(len(str(l['total'])) for l in account)
+
+    # Encabezado
+    print('-'*(len_name + len_price + len_quantity + len_total + 13))
+    print(f'{'INVENTARIO':>15}')
+    print('-'*(len_name + len_price + len_quantity + len_total + 13))
+    print(F'{'NOMBRE':<{len_name}} | {'PRECIO':<{len_price}} | {'CANTIDAD':<{len_quantity}} | {'TOTAL':<{len_total}}')
+    print('-'*(len_name + len_price + len_quantity + len_total + 13))
+
+    for inv in (account):
+        print(F'{inv['nombre']:<{len_name}} | {inv['precio']:<{len_price}} | {inv['cantidad']:<{len_quantity + 5}} | {inv['total']:<{len_total}}')
+    print('-'*(len_name + len_price + len_quantity + len_total + 13))
+
+    print(f'Suma total precios =>           {total_price_inventary}') # suma se total precios
+    print(f'Cantidad de productos =>        {quantity_products}')
+    print(f'Producto mas caro =>            {name_product} | {higher_price}')
+    print(f'Producto con mayor stock =>     {name_product_q} | {higher_quantity_product}')
+
+
+    
 
